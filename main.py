@@ -3,6 +3,9 @@
 
 import pyxel
 
+# SPRITE_TO_TILEMAP_MODIFIER
+S_T_M = 8
+
 
 class Character:
     def __init__(self, x, y, img, u, v, w, h):
@@ -52,8 +55,8 @@ class Scene:
 class CityScene(Scene):
     def __init__(self, x, y, tm, u, v, w, h):
         super().__init__(x, y, tm, u, v, w, h)
-        self.player = Player(x+1, y+6)
-        self.enemy = Monkey(x+13, y+8)
+        self.player = Player(x+1*S_T_M, y+6*S_T_M)
+        self.enemy = Monkey(x+13*S_T_M, y+8*S_T_M)
 
     def update(self):
         self.x = self.x
