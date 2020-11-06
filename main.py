@@ -18,7 +18,7 @@ class Character:
         pass
 
     def draw(self):
-        pyxel.blt(self.x, self.y, self.img, self.u, self.v, self.w, self.h)
+        pyxel.blt(self.x, self.y, self.img, self.u, self.v, self.w, self.h, 0)
 
 
 class Monkey(Character):
