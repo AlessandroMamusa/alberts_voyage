@@ -66,9 +66,9 @@ class CityScene(Scene):
 
 class App:
     def __init__(self):
-        pyxel.init(width=256, height=256, caption="Albert's journey", fps=60)
+        pyxel.init(width=128, height=128, caption="Albert's journey", fps=60)
         pyxel.load("assets/albert.pyxres")
-        self.city = CityScene(30, 80, 0, 0, 0, 16, 16)
+        self.city = CityScene(0, 0, 0, 0, 0, 16, 16)
 
         pyxel.run(self.update, self.draw)
 
