@@ -30,8 +30,7 @@ class Projectile:
         self._is_shoot = self._has_hit = False
 
     def _check_collision(self):
-        print(self.x, self.y, self.tm.get(self.x, self.y))
-        if self.t >= 1:
+        if self.t >= 2.5:
             self._has_hit = True
             self._is_shoot = False
 
@@ -45,10 +44,12 @@ class Projectile:
             pyxel.blt(self.x, self.y, 0, 17, 9, 4, 7, 0)
 
     def update(self):
+        if pyxel.btn(pyxel.KEY_D):
+            self.t += 0.01
+
         if self._is_shoot and not self._has_hit:
-            self.x += self.vx * self.t
-            self.y += self.vy - self.g * math.pow(self.t, 2) / 2
-            self.t += 0.1
+            self.x = self.ix + self.vx * self.t
+            self.y = self.iy + self.g * math.pow(self.t, 2) / 2
             self._check_collision()
 
     def shoot(self, angle, velocity, trajectory=None):
