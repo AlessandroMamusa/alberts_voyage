@@ -2,36 +2,77 @@
 # -*- coding: utf-8 -*-
 
 import pyxel
+import math
 
 # SPRITE_TO_TILEMAP_MODIFIER
 S_T_M = 8
 
 
 class Character:
-    def __init__(self, x, y, img, u, v, w, h):
+    def __init__(self, x, y, img, u, v, w, h, *args, **kwargs):
         self.x = x
         self.y = y
+        self.sight_x = x + 23
+        self.sight_y = y + 7
+        self.sight_angle = 0.0
         self.img = img
         self.u = u
         self.v = v
         self.w = w
         self.h = h
+        self.active = False
 
     def update(self):
         pass
 
     def draw(self):
+        # character sprite
         pyxel.blt(self.x, self.y, self.img, self.u, self.v, self.w, self.h, 0)
+        if self._myTurn():
+            # sight sprite
+            pyxel.blt(self.sight_x, self.sight_y, self.img, 32, 0, 8, 8, 0)
+            self.p.draw()
+
+    def _myTurn(self):
+        return self.active
 
 
 class Monkey(Character):
-    def __init__(self, x, y):
-        super().__init__(x, y, 0, 0, 0, 16, 16)
+    def __init__(self, x, y, *args, **kwargs):
+        super().__init__(x, y, 0, 0, 0, 16, 16, *args, **kwargs)
+
 
 class Player(Monkey):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.active = True
+
     def update(self):
-        # add player input
-        pass
+        if not self.active:
+            return
+
+        if pyxel.btn(pyxel.KEY_LEFT):
+            # X := originX + cos(angle)*radius
+            # Y := originY + sin(angle)*radius
+            self.sight_angle -= 0.1
+            self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
+            self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
+
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.sight_angle += 0.1
+            self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
+            self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
+
+        if pyxel.btn(pyxel.KEY_UP):
+            self.sight_angle -= 0.1
+            self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
+            self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
+
+        if pyxel.btn(pyxel.KEY_DOWN):
+            self.sight_angle += 0.1
+            self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
+            self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
+
 
 
 class Scene:
@@ -55,16 +96,20 @@ class Scene:
 class CityScene(Scene):
     def __init__(self, x, y, tm, u, v, w, h):
         super().__init__(x, y, tm, u, v, w, h)
-        self.player = Player(x+1*S_T_M, y+6*S_T_M)
-        self.enemy = Monkey(x+13*S_T_M, y+8*S_T_M)
+        self.characters = []
+        player = Player(x+1*S_T_M, y+6*S_T_M)
+        enemy = Monkey(x+13*S_T_M, y+8*S_T_M)
+        self.characters.append(player)
+        self.characters.append(enemy)
 
     def update(self):
-        self.x = self.x
+        for c in self.characters:
+            c.update()
 
     def draw(self):
         super().draw()
-        self.player.draw()
-        self.enemy.draw()
+        for c in self.characters:
+            c.draw()
 
 
 class App:
