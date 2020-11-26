@@ -8,8 +8,60 @@ import math
 S_T_M = 8
 
 
+class Projectile:
+    def __init__(self, x, y, tm, type=None):
+        self.x = x
+        self.y = y
+        self._initValues(x, y)
+        self.t = 0.1
+        self.vx = self.vy = 0
+        self._is_shoot = self._has_hit = False
+        self.g = 9.8
+        self.tm = pyxel.tilemap(0)
+
+    def _initValues(self, x, y):
+        self.ix = x
+        self.iy = y
+
+    def _reset(self):
+        self.x = self.ix
+        self.y = self.iy
+        self.t = self.vx = self.vy = 0
+        self._is_shoot = self._has_hit = False
+
+    def _check_collision(self):
+        print(self.x, self.y, self.tm.get(self.x, self.y))
+        if self.t >= 1:
+            self._has_hit = True
+            self._is_shoot = False
+
+    def draw(self):
+        if self._is_shoot:
+            # aggiungi animazione
+            pyxel.blt(self.x, self.y, 0, 17, 9, 4, 7, 0)
+        elif self._has_hit:
+            pyxel.blt(self.x, self.y, 0, 24, 10, 7, 5, 0)
+        else:
+            pyxel.blt(self.x, self.y, 0, 17, 9, 4, 7, 0)
+
+    def update(self):
+        if self._is_shoot and not self._has_hit:
+            self.x += self.vx * self.t
+            self.y += self.vy - self.g * math.pow(self.t, 2) / 2
+            self.t += 0.1
+            self._check_collision()
+
+    def shoot(self, angle, velocity, trajectory=None):
+        if self._has_hit:
+            self._reset()
+            return
+        self._is_shoot = True
+        self.vx = velocity * math.cos(angle)
+        self.vy = velocity * math.sin(angle)
+
+
 class Character:
-    def __init__(self, x, y, img, u, v, w, h, *args, **kwargs):
+    def __init__(self, x, y, img, u, v, w, h, tm, *args, **kwargs):
         self.x = x
         self.y = y
         self.sight_x = x + 23
@@ -21,6 +73,7 @@ class Character:
         self.w = w
         self.h = h
         self.active = False
+        self.p = Projectile(self.x, self.y, tm)
 
     def update(self):
         pass
@@ -73,6 +126,9 @@ class Player(Monkey):
             self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
             self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
 
+        self.p.update()
+        if pyxel.btn(pyxel.KEY_SPACE):
+            self.p.shoot(self.sight_angle, 0.1)
 
 
 class Scene:
@@ -97,8 +153,8 @@ class CityScene(Scene):
     def __init__(self, x, y, tm, u, v, w, h):
         super().__init__(x, y, tm, u, v, w, h)
         self.characters = []
-        player = Player(x+1*S_T_M, y+6*S_T_M)
-        enemy = Monkey(x+13*S_T_M, y+8*S_T_M)
+        player = Player(x+1*S_T_M, y+6*S_T_M, tm)
+        enemy = Monkey(x+13*S_T_M, y+8*S_T_M, tm)
         self.characters.append(player)
         self.characters.append(enemy)
 
