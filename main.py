@@ -12,9 +12,9 @@ class Projectile:
     def __init__(self, x, y, tm, type=None):
         self.x = x
         self.y = y
-        self._initValues(x, y)
+        self._initValues(x+4, y+4)
         self.t = 0.1
-        self.vx = self.vy = 0
+        self.vx = self.vy = self.angle = 0
         self._is_shoot = self._has_hit = False
         self.g = 9.8
         self.tm = pyxel.tilemap(0)
@@ -30,35 +30,48 @@ class Projectile:
         self._is_shoot = self._has_hit = False
 
     def _check_collision(self):
+        print(self.x, self.y, self.angle)
+        # print(self.vx, self.vy)
         if self.t >= 2.5:
             self._has_hit = True
             self._is_shoot = False
 
-    def draw(self):
-        if self._is_shoot:
-            # aggiungi animazione
-            pyxel.blt(self.x, self.y, 0, 17, 9, 4, 7, 0)
-        elif self._has_hit:
-            pyxel.blt(self.x, self.y, 0, 24, 10, 7, 5, 0)
-        else:
-            pyxel.blt(self.x, self.y, 0, 17, 9, 4, 7, 0)
+    def draw(self, angle):
+        angle = angle
+        velocity = 10
+        g = 9.8
+        vx = velocity * math.cos(angle)
+        vy = velocity * math.sin(angle)
+
+        for t in range(100):
+            x = self.ix + vx * (t/10)
+            y = self.iy + vy * t - g * math.pow((t/10), 2) / 2
+            pyxel.circ(x, y, 1, 9)
+
+        # if self._is_shoot:
+        #     # add animation
+        #     pyxel.blt(self.x, self.y, 0, 17, 9, 4, 7, 0)
+        # elif self._has_hit:
+        #     pyxel.blt(self.x, self.y, 0, 24, 10, 7, 5, 0)
+        # else:
+        #     pyxel.blt(self.x, self.y, 0, 17, 9, 4, 7, 0)
 
     def update(self):
-        if pyxel.btn(pyxel.KEY_D):
-            self.t += 0.01
+        pass
+        # self.t += 0.01
+        # if self._is_shoot and not self._has_hit:
+        #     self.x = self.ix + self.vx * self.t
+        #     self.y = self.iy + self.g * math.pow(self.t, 2) / 2
+        #     self._check_collision()
 
-        if self._is_shoot and not self._has_hit:
-            self.x = self.ix + self.vx * self.t
-            self.y = self.iy + self.g * math.pow(self.t, 2) / 2
-            self._check_collision()
+    # def shoot(self, angle, velocity, trajectory=None):
+    #     if self._has_hit:
+    #         self._reset()
 
-    def shoot(self, angle, velocity, trajectory=None):
-        if self._has_hit:
-            self._reset()
-            return
-        self._is_shoot = True
-        self.vx = velocity * math.cos(angle)
-        self.vy = velocity * math.sin(angle)
+    #     self._is_shoot = True
+    #     self.angle = angle
+    #     self.vx = velocity * math.cos(angle)
+    #     self.vy = velocity * math.sin(angle)
 
 
 class Character:
@@ -85,7 +98,7 @@ class Character:
         if self._myTurn():
             # sight sprite
             pyxel.blt(self.sight_x, self.sight_y, self.img, 32, 0, 8, 8, 0)
-            self.p.draw()
+            self.p.draw(self.sight_angle)
 
     def _myTurn(self):
         return self.active
@@ -106,8 +119,6 @@ class Player(Monkey):
             return
 
         if pyxel.btn(pyxel.KEY_LEFT):
-            # X := originX + cos(angle)*radius
-            # Y := originY + sin(angle)*radius
             self.sight_angle -= 0.1
             self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
             self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
@@ -128,8 +139,8 @@ class Player(Monkey):
             self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
 
         self.p.update()
-        if pyxel.btn(pyxel.KEY_SPACE):
-            self.p.shoot(self.sight_angle, 0.1)
+        # if pyxel.btn(pyxel.KEY_SPACE):
+        #     self.p.shoot(self.sight_angle, velocity=10)
 
 
 class Scene:
