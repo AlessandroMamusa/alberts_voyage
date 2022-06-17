@@ -183,7 +183,7 @@ class App:
     def __init__(self):
         pyxel.init(width=128, height=128, title="Albert's voyage", fps=60, quit_key=pyxel.KEY_Q)
         pyxel.load("assets/albert.pyxres", image=True, tilemap=True)
-        self.city = CityScene(0, 0, 0, 0, 0, 16, 16)
+        self.city = CityScene(0, 0, 0, 0, 0, 128, 128)
 
         pyxel.run(self.update, self.draw)
 
