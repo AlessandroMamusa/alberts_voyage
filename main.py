@@ -121,17 +121,17 @@ class Player(Monkey):
             self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
 
         if pyxel.btn(pyxel.KEY_RIGHT):
-            self.sight_angle += 0.1
+            self.sight_angle += 0.05
             self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
             self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
 
         if pyxel.btn(pyxel.KEY_UP):
-            self.sight_angle -= 0.1
+            self.sight_angle -= 0.05
             self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
             self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
 
         if pyxel.btn(pyxel.KEY_DOWN):
-            self.sight_angle += 0.1
+            self.sight_angle += 0.05
             self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
             self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
 
