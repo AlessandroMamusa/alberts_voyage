@@ -7,6 +7,7 @@ import pyxel
 
 # SPRITE_TO_TILE_MODIFIER
 S_T_M = 8
+SPRITE_DIM = 8
 
 # costant velocity (to be replaced in future)
 VO = 3
@@ -28,25 +29,35 @@ class Projectile:
         self._is_shoot = self._has_hit = False
 
     def _check_collision(self):
-        if self.y >= 120:
+        if self.y >= pyxel.height - SPRITE_DIM:
             self._has_hit = True
             self._is_shoot = False
 
     def draw(self):
         # _drawPreview(angle)
         if self._is_shoot:
-            # add animation
-            pyxel.blt(self.x, self.y, 0, 17, 9, 4, 7, 0)
+            # flying animation
+            pyxel.blt(
+                self.x, self.y, 0, 16, 8, SPRITE_DIM, SPRITE_DIM, 0
+            )  # 16,8 banana sprite in spritesheet
         elif self._has_hit:
-            pyxel.blt(self.x, self.y, 0, 24, 10, 7, 5, 0)
+            # splat sprite
+            pyxel.blt(
+                self.x, self.y, 0, 24, 8, SPRITE_DIM, SPRITE_DIM, 0
+            )  # 24,8 splat banana sprite in spritesheet
         else:
-            pyxel.blt(self.x, self.y, 0, 17, 9, 4, 7, 0)
+            # in hand
+            pyxel.blt(
+                self.x, self.y, 0, 16, 8, SPRITE_DIM, SPRITE_DIM, 0
+            )  # 16,8 banana sprite in spritesheet
 
     def update(self):
         if self._is_shoot and not self._has_hit:
             self.vy += self.g  # += because in pyxel the y axis goes down
-            self.x = min(self.x + self.vx, 126)
-            self.y = max(self.y + self.vy, 0)
+            self.x = max(
+                min(self.x + self.vx, pyxel.width - SPRITE_DIM), 0
+            )  # lock banana into the screen
+            self.y = max(self.y + self.vy, 0)  # lock banana into the screen
             self._check_collision()
 
     def shoot(self, angle, velocity, trajectory=None):
@@ -95,7 +106,9 @@ class Character:
         pyxel.blt(self.x, self.y, self.img, self.u, self.v, self.w, self.h, 0)
         if self._myTurn():
             # sight sprite
-            pyxel.blt(self.sight_x, self.sight_y, self.img, 32, 0, 8, 8, 0)
+            pyxel.blt(
+                self.sight_x, self.sight_y, self.img, 32, 0, SPRITE_DIM, SPRITE_DIM, 0
+            )
             self.p.draw()
 
     def _myTurn(self):
@@ -104,7 +117,7 @@ class Character:
 
 class Monkey(Character):
     def __init__(self, x, y, *args, **kwargs):
-        super().__init__(x, y, 0, 0, 0, 16, 16, *args, **kwargs)
+        super().__init__(x, y, 0, 0, 0, SPRITE_DIM * 2, SPRITE_DIM * 2, *args, **kwargs)
 
 
 class Player(Monkey):
@@ -118,23 +131,39 @@ class Player(Monkey):
 
         if pyxel.btn(pyxel.KEY_LEFT):
             self.sight_angle -= 0.05
-            self.sight_x = self.x + 8 + math.cos(self.sight_angle) * 16
-            self.sight_y = self.y + 8 + math.sin(self.sight_angle) * 16
+            self.sight_x = (
+                self.x + SPRITE_DIM + math.cos(self.sight_angle) * SPRITE_DIM * 2
+            )
+            self.sight_y = (
+                self.y + SPRITE_DIM + math.sin(self.sight_angle) * SPRITE_DIM * 2
+            )
 
         if pyxel.btn(pyxel.KEY_RIGHT):
             self.sight_angle += 0.05
-            self.sight_x = self.x + 8 + math.cos(self.sight_angle) * 16
-            self.sight_y = self.y + 8 + math.sin(self.sight_angle) * 16
+            self.sight_x = (
+                self.x + SPRITE_DIM + math.cos(self.sight_angle) * SPRITE_DIM * 2
+            )
+            self.sight_y = (
+                self.y + SPRITE_DIM + math.sin(self.sight_angle) * SPRITE_DIM * 2
+            )
 
         if pyxel.btn(pyxel.KEY_UP):
             self.sight_angle -= 0.05
-            self.sight_x = self.x + 8 + math.cos(self.sight_angle) * 16
-            self.sight_y = self.y + 8 + math.sin(self.sight_angle) * 16
+            self.sight_x = (
+                self.x + SPRITE_DIM + math.cos(self.sight_angle) * SPRITE_DIM * 2
+            )
+            self.sight_y = (
+                self.y + SPRITE_DIM + math.sin(self.sight_angle) * SPRITE_DIM * 2
+            )
 
         if pyxel.btn(pyxel.KEY_DOWN):
             self.sight_angle += 0.05
-            self.sight_x = self.x + 8 + math.cos(self.sight_angle) * 16
-            self.sight_y = self.y + 8 + math.sin(self.sight_angle) * 16
+            self.sight_x = (
+                self.x + SPRITE_DIM + math.cos(self.sight_angle) * SPRITE_DIM * 2
+            )
+            self.sight_y = (
+                self.y + SPRITE_DIM + math.sin(self.sight_angle) * SPRITE_DIM * 2
+            )
 
         self.p.update()
         if pyxel.btn(pyxel.KEY_SPACE):
@@ -186,7 +215,7 @@ class App:
             width=128, height=128, title="Albert's voyage", fps=60, quit_key=pyxel.KEY_Q
         )
         pyxel.load("assets/albert.pyxres", image=True, tilemap=True)
-        self.city = CityScene(0, 0, 0, 0, 0, 128, 128)
+        self.city = CityScene(0, 0, 0, 0, 0, pyxel.width, pyxel.height)
 
         pyxel.run(self.update, self.draw)
 
