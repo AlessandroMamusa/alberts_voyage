@@ -194,19 +194,36 @@ class CityScene(Scene):
     def __init__(self, x, y, tm, u, v, w, h):
         super().__init__(x, y, tm, u, v, w, h)
         self.characters = []
+        self.enemies = []
         player = Player(x + 1 * S_T_M, y + 6 * S_T_M, tm)
         enemy = Monkey(x + 13 * S_T_M, y + 8 * S_T_M, tm)
         self.characters.append(player)
-        self.characters.append(enemy)
+        self.enemies.append(enemy)
 
     def update(self):
         for c in self.characters:
             c.update()
+            if not c.p._is_shoot:
+                continue
+            for enemy in self.enemies:
+                if (
+                    enemy.x + enemy.w > c.p.x
+                    and c.p.x > enemy.x
+                    and enemy.y + enemy.h > c.p.y
+                    and c.p.y > enemy.y
+                ):
+                    c.p._has_hit = True
+                    c.p._is_shoot = False
+
+        for e in self.enemies:
+            e.update()
 
     def draw(self):
         super().draw()
         for c in self.characters:
             c.draw()
+        for e in self.enemies:
+            e.draw()
 
 
 class App:
