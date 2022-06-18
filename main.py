@@ -1,10 +1,11 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pyxel
 import math
 
-# SPRITE_TO_TILEMAP_MODIFIER
+import pyxel
+
+# SPRITE_TO_TILE_MODIFIER
 S_T_M = 8
 
 # costant velocity (to be replaced in future)
@@ -117,23 +118,23 @@ class Player(Monkey):
 
         if pyxel.btn(pyxel.KEY_LEFT):
             self.sight_angle -= 0.05
-            self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
-            self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
+            self.sight_x = self.x + 8 + math.cos(self.sight_angle) * 16
+            self.sight_y = self.y + 8 + math.sin(self.sight_angle) * 16
 
         if pyxel.btn(pyxel.KEY_RIGHT):
             self.sight_angle += 0.05
-            self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
-            self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
+            self.sight_x = self.x + 8 + math.cos(self.sight_angle) * 16
+            self.sight_y = self.y + 8 + math.sin(self.sight_angle) * 16
 
         if pyxel.btn(pyxel.KEY_UP):
             self.sight_angle -= 0.05
-            self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
-            self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
+            self.sight_x = self.x + 8 + math.cos(self.sight_angle) * 16
+            self.sight_y = self.y + 8 + math.sin(self.sight_angle) * 16
 
         if pyxel.btn(pyxel.KEY_DOWN):
             self.sight_angle += 0.05
-            self.sight_x = self.x+8 + math.cos(self.sight_angle)*16
-            self.sight_y = self.y+8 + math.sin(self.sight_angle)*16
+            self.sight_x = self.x + 8 + math.cos(self.sight_angle) * 16
+            self.sight_y = self.y + 8 + math.sin(self.sight_angle) * 16
 
         self.p.update()
         if pyxel.btn(pyxel.KEY_SPACE):
@@ -164,8 +165,8 @@ class CityScene(Scene):
     def __init__(self, x, y, tm, u, v, w, h):
         super().__init__(x, y, tm, u, v, w, h)
         self.characters = []
-        player = Player(x+1*S_T_M, y+6*S_T_M, tm)
-        enemy = Monkey(x+13*S_T_M, y+8*S_T_M, tm)
+        player = Player(x + 1 * S_T_M, y + 6 * S_T_M, tm)
+        enemy = Monkey(x + 13 * S_T_M, y + 8 * S_T_M, tm)
         self.characters.append(player)
         self.characters.append(enemy)
 
@@ -181,7 +182,9 @@ class CityScene(Scene):
 
 class App:
     def __init__(self):
-        pyxel.init(width=128, height=128, title="Albert's voyage", fps=60, quit_key=pyxel.KEY_Q)
+        pyxel.init(
+            width=128, height=128, title="Albert's voyage", fps=60, quit_key=pyxel.KEY_Q
+        )
         pyxel.load("assets/albert.pyxres", image=True, tilemap=True)
         self.city = CityScene(0, 0, 0, 0, 0, 128, 128)
 
