@@ -95,7 +95,7 @@ class Character:
         self.w = w
         self.h = h
         self.active = False
-        self.p = Projectile(self.x, self.y, tm)
+        self.projectile = Projectile(self.x, self.y, tm)
 
     def update(self):
         pass
@@ -108,10 +108,13 @@ class Character:
             pyxel.blt(
                 self.sight_x, self.sight_y, self.img, 32, 0, SPRITE_DIM, SPRITE_DIM, 0
             )
-            self.p.draw()
+            self.projectile.draw()
 
     def _myTurn(self):
         return self.active
+
+    def endTurn(self):
+        self.active = False
 
 
 class Monkey(Character):
@@ -164,8 +167,9 @@ class Player(Monkey):
                 self.y + SPRITE_DIM + math.sin(self.sight_angle) * SPRITE_DIM * 2
             )
 
-        self.p.update()
         if pyxel.btn(pyxel.KEY_SPACE):
-            self.p.shoot(self.sight_angle, velocity=VO)
+            self.projectile.shoot(self.sight_angle, velocity=VO)
         if pyxel.btn(pyxel.KEY_R):
-            self.p.reload()
+            self.projectile.reload()
+
+        self.projectile.update()
