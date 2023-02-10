@@ -1,6 +1,15 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# ####### TODOS ########
+# TODO: generate skyline
+# TODO: place player and enemie/s
+# TODO: projectiles that interact with buildings and player + enemies
+# TODO: turns player and enemie/s
+# TODO: schenes (start, win, game over)
+# ######################
+
+
 import pyxel
 
 from scenes import SCENES, VICTORY_SCENE, GAME_OVER_SCENE
