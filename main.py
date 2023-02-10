@@ -3,7 +3,7 @@
 
 # ####### TODOS ########
 # DONE: generate skyline
-# TODO: place player and enemie/s
+# DONE: place player and enemie/s
 # TODO: projectiles that interact with buildings and player + enemies
 # TODO: camera that follow projectile
 # TODO: turns player and enemie/s
@@ -18,7 +18,7 @@ from scenes import GAME_OVER_SCENE, SCENES, VICTORY_SCENE
 
 class Game:
     def __init__(self):
-        self._current_scene = 0
+        self._current_scene = 1
         self.scene = SCENES[self._current_scene]
         self.players = []
         self.enemies = []
