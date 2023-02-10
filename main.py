@@ -2,26 +2,29 @@
 # -*- coding: utf-8 -*-
 
 # ####### TODOS ########
-# TODO: generate skyline
+# DONE: generate skyline
 # TODO: place player and enemie/s
 # TODO: projectiles that interact with buildings and player + enemies
+# TODO: camera that follow projectile
 # TODO: turns player and enemie/s
-# TODO: schenes (start, win, game over)
+# TODO: schenes (menu, start, win, game over)
 # ######################
 
 
 import pyxel
 
-from scenes import SCENES, VICTORY_SCENE, GAME_OVER_SCENE
+from scenes import GAME_OVER_SCENE, SCENES, VICTORY_SCENE
 
 
 class Game:
     def __init__(self):
-        self._current_scene = 0
+        self._current_scene = 1
         self.scene = SCENES[self._current_scene]
 
     def start(self):
-        self._scene_instance = self.scene(0, 0, 0, 0, 0, pyxel.width, pyxel.height, self)
+        self._scene_instance = self.scene(
+            0, 0, 0, 0, 0, pyxel.width, pyxel.height, self
+        )
 
     def victory(self):
         self.scene = VICTORY_SCENE
@@ -45,7 +48,7 @@ class Game:
 class App:
     def __init__(self):
         pyxel.init(
-            width=128, height=128, title="Albert's voyage", fps=60, quit_key=pyxel.KEY_Q
+            width=256, height=128, title="Albert's voyage", fps=30, quit_key=pyxel.KEY_Q
         )
         pyxel.load("assets/albert.pyxres", image=True, tilemap=True)
         self.game = Game()
