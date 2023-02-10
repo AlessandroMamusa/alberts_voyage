@@ -5,11 +5,7 @@ import random
 import pyxel
 
 from characters import Monkey, Player
-
-S_T_M = 8
-HEIGHT = 128
-WIDTH = 256
-SEED = 2340923
+from constants import HEIGHT, SPRITE_DIM
 
 
 class Scene:
@@ -60,8 +56,8 @@ class GeneratedLevel(Scene):
 class CityScene(Scene):
     def __init__(self, x, y, tm, u, v, w, h, game):
         super().__init__(x, y, tm, u, v, w, h, game)
-        player = Player(x + 1 * S_T_M, y + 6 * S_T_M, tm, game.enemies)
-        enemy = Monkey(x + 13 * S_T_M, y + 8 * S_T_M, tm, game.players)
+        player = Player(x + 1 * SPRITE_DIM, y + 6 * SPRITE_DIM, tm, game.enemies)
+        enemy = Monkey(x + 13 * SPRITE_DIM, y + 8 * SPRITE_DIM, tm, game.players)
         game.players.append(player)
         game.enemies.append(enemy)
 

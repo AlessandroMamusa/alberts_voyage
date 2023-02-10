@@ -5,11 +5,7 @@ import math
 
 import pyxel
 
-# SPRITE_TO_TILE_MODIFIER
-SPRITE_DIM = 8
-
-# costant velocity (to be replaced in future)
-VO = 3
+from constants import SPRITE_DIM, VO
 
 
 class Projectile:
