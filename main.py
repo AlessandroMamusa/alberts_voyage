@@ -17,10 +17,10 @@ class Game:
     def victory(self):
         self.scene = VICTORY_SCENE
 
-    def gameOver(self):
+    def game_over(self):
         self.scene = GAME_OVER_SCENE
 
-    def nextScene(self):
+    def next_scene(self):
         self._current_scene += 1
         self.scene = SCENES[self._current_scene]
         # destroy last scene
@@ -39,7 +39,6 @@ class App:
             width=128, height=128, title="Albert's voyage", fps=60, quit_key=pyxel.KEY_Q
         )
         pyxel.load("assets/albert.pyxres", image=True, tilemap=True)
-        # self.city = CityScene(0, 0, 0, 0, 0, pyxel.width, pyxel.height)
         self.game = Game()
         self.game.start()
         pyxel.run(self.update, self.draw)

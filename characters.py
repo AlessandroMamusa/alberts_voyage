@@ -103,17 +103,17 @@ class Character:
     def draw(self):
         # character sprite
         pyxel.blt(self.x, self.y, self.img, self.u, self.v, self.w, self.h, 0)
-        if self._myTurn():
+        if self._my_turn():
             # sight sprite
             pyxel.blt(
                 self.sight_x, self.sight_y, self.img, 32, 0, SPRITE_DIM, SPRITE_DIM, 0
             )
             self.projectile.draw()
 
-    def _myTurn(self):
+    def _my_turn(self):
         return self.active
 
-    def endTurn(self):
+    def end_turn(self):
         self.active = False
 
 

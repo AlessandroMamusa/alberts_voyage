@@ -59,7 +59,7 @@ class CityScene(Scene):
             if (character.projectile._has_hit):  # projectile hit something else
                 character.projectile._has_hit = True
                 character.projectile._is_shoot = False
-                character.endTurn()
+                character.end_turn()
                 self.turn += 1
 
         for e in self.enemies:
