@@ -72,7 +72,7 @@ class CityScene(Scene):
     def update(self):
         for character in self.characters:
             character.update()
-            # if not character.projectile._is_shoot:
+            # if not character.projectile._is_flying:
             #     continue
             for enemy in self.enemies:
                 if (
@@ -89,7 +89,7 @@ class CityScene(Scene):
                         self.game.victory()
             if character.projectile._has_hit:  # projectile hit something else
                 character.projectile._has_hit = True
-                character.projectile._is_shoot = False
+                character.projectile._is_flying = False
                 character.end_turn()
                 self.turn += 1
 

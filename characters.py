@@ -17,7 +17,7 @@ class Projectile:
         self.x = self.ix = x + 3
         self.y = self.iy = y + 4
         self.vx = self.vy = self.angle = 0
-        self._is_shoot = self._has_hit = False
+        self._is_flying = self._has_hit = False
         self.g = 0.08
         self.tm = pyxel.tilemap(0)
 
@@ -25,16 +25,16 @@ class Projectile:
         self.x = self.ix
         self.y = self.iy
         self.t = self.vx = self.vy = 0
-        self._is_shoot = self._has_hit = False
+        self._is_flying = self._has_hit = False
 
     def _check_collision(self):
         if self.y >= pyxel.height - SPRITE_DIM:
             self._has_hit = True
-            self._is_shoot = False
+            self._is_flying = False
 
     def draw(self):
         # _drawPreview(angle)
-        if self._is_shoot:
+        if self._is_flying:
             # flying animation
             pyxel.blt(
                 self.x, self.y, 0, 16, 8, SPRITE_DIM, SPRITE_DIM, 0
@@ -51,7 +51,7 @@ class Projectile:
             )  # 16,8 banana sprite in spritesheet
 
     def update(self):
-        if self._is_shoot and not self._has_hit:
+        if self._is_flying and not self._has_hit:
             self.vy += self.g  # += because in pyxel the y axis goes down
             self.x = max(
                 min(self.x + self.vx, pyxel.width - SPRITE_DIM), 0
@@ -62,7 +62,7 @@ class Projectile:
     def shoot(self, angle, velocity, trajectory=None):
         self.vx = VO * math.cos(angle)
         self.vy = VO * math.sin(angle)
-        self._is_shoot = True
+        self._is_flying = True
 
     # To add the preview, pass angle to draw() and decomment the code under
     # def _drawPreview(angle)
