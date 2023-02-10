@@ -18,8 +18,10 @@ from scenes import GAME_OVER_SCENE, SCENES, VICTORY_SCENE
 
 class Game:
     def __init__(self):
-        self._current_scene = 1
+        self._current_scene = 0
         self.scene = SCENES[self._current_scene]
+        self.players = []
+        self.enemies = []
 
     def start(self):
         self._scene_instance = self.scene(
@@ -40,9 +42,17 @@ class Game:
 
     def update(self):
         self._scene_instance.update()
+        for p in self.players:
+            p.update()
+        for e in self.enemies:
+            e.update()
 
     def draw(self):
         self._scene_instance.draw()
+        for p in self.players:
+            p.draw()
+        for e in self.enemies:
+            e.draw()
 
 
 class App:

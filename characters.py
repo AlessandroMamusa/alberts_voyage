@@ -13,13 +13,14 @@ VO = 3
 
 
 class Projectile:
-    def __init__(self, x, y, tm, type=None):
+    def __init__(self, x, y, tm, targets, type=None):
         self.x = self.ix = x + 3
         self.y = self.iy = y + 4
         self.vx = self.vy = self.angle = 0
         self._is_flying = self._has_hit = False
         self.g = 0.08
         self.tm = pyxel.tilemap(0)
+        self.targets = targets
 
     def reload(self):
         self.x = self.ix
@@ -59,6 +60,21 @@ class Projectile:
             self.y = max(self.y + self.vy, 0)  # lock banana into the screen
             self._check_collision()
 
+        for target in self.targets:
+            if (
+                # check for targets hitten
+                target.x + target.w > self.x
+                and self.x > target.x
+                and target.y + target.h > self.y
+                and self.y > target.y
+            ):
+                # play enemy death animation
+                self._has_hit = True
+                self.targets.pop()
+        if self._has_hit:  # projectile hit something else
+            self._has_hit = True
+            self._is_flying = False
+
     def shoot(self, angle, velocity, trajectory=None):
         self.vx = VO * math.cos(angle)
         self.vy = VO * math.sin(angle)
@@ -83,7 +99,7 @@ class Projectile:
 
 
 class Character:
-    def __init__(self, x, y, img, u, v, w, h, tm, *args, **kwargs):
+    def __init__(self, x, y, img, u, v, w, h, tm, targets, *args, **kwargs):
         self.x = x
         self.y = y
         self.sight_x = x + 23
@@ -95,7 +111,7 @@ class Character:
         self.w = w
         self.h = h
         self.active = False
-        self.projectile = Projectile(self.x, self.y, tm)
+        self.projectile = Projectile(self.x, self.y, tm, targets)
 
     def update(self):
         pass

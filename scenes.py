@@ -60,48 +60,16 @@ class GeneratedLevel(Scene):
 class CityScene(Scene):
     def __init__(self, x, y, tm, u, v, w, h, game):
         super().__init__(x, y, tm, u, v, w, h, game)
-        self.characters = []
-        self.enemies = []
-        player = Player(x + 1 * S_T_M, y + 6 * S_T_M, tm)
-        enemy = Monkey(x + 13 * S_T_M, y + 8 * S_T_M, tm)
-        self.characters.append(player)
-        self.enemies.append(enemy)
-
-        self.turn = 0
+        player = Player(x + 1 * S_T_M, y + 6 * S_T_M, tm, game.enemies)
+        enemy = Monkey(x + 13 * S_T_M, y + 8 * S_T_M, tm, game.players)
+        game.players.append(player)
+        game.enemies.append(enemy)
 
     def update(self):
-        for character in self.characters:
-            character.update()
-            # if not character.projectile._is_flying:
-            #     continue
-            for enemy in self.enemies:
-                if (
-                    # check for enemies hitten
-                    enemy.x + enemy.w > character.projectile.x
-                    and character.projectile.x > enemy.x
-                    and enemy.y + enemy.h > character.projectile.y
-                    and character.projectile.y > enemy.y
-                ):
-                    # play enemy death animation
-                    character.projectile._has_hit = True
-                    self.enemies.pop()
-                    if len(self.enemies) == 0:
-                        self.game.victory()
-            if character.projectile._has_hit:  # projectile hit something else
-                character.projectile._has_hit = True
-                character.projectile._is_flying = False
-                character.end_turn()
-                self.turn += 1
-
-        for e in self.enemies:
-            e.update()
+        super().update()
 
     def draw(self):
         super().draw()
-        for c in self.characters:
-            c.draw()
-        for e in self.enemies:
-            e.draw()
 
 
 SCENES = [CityScene, GeneratedLevel]
