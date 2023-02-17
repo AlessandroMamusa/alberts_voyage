@@ -37,8 +37,8 @@ class GeneratedLevel(Scene):
         super().__init__(x, y, tm, u, v, w, h, game)
         self.skyline = []
         self._regenerate_skyline()
-        player = Player(0 + SPRITE_DIM, 16, tm, game.enemies)
-        enemy = Monkey(16 + SPRITE_DIM, 16, tm, game.players)
+        player = Player(0 + SPRITE_DIM, 16, tm, game, game.enemies)
+        enemy = Monkey(16 + SPRITE_DIM, 16, tm, game, game.players)
         self._place_characters([player, enemy])
         game.players.append(player)
         game.enemies.append(enemy)

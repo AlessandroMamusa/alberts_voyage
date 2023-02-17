@@ -9,14 +9,16 @@ from constants import SPRITE_DIM, VO
 
 
 class Projectile:
-    def __init__(self, x, y, tm, targets, type=None):
+    def __init__(self, x, y, tm, targets, game, type=None):
         self.x = self.ix = x + 3
         self.y = self.iy = y + 4
+        self.targets = targets
+        self.game = game
+
         self.vx = self.vy = self.angle = 0
         self._is_flying = self._has_hit = False
         self.g = 0.08
         self.tm = pyxel.tilemap(0)
-        self.targets = targets
 
     def reload(self):
         self.x = self.ix
@@ -66,10 +68,13 @@ class Projectile:
             ):
                 # play enemy death animation
                 self._has_hit = True
-                self.targets.pop()
+                self.targets.remove(target)
+                self.game.end_turn()
+
         if self._has_hit:  # projectile hit something else
             self._has_hit = True
             self._is_flying = False
+            self.game.end_turn()
 
     def shoot(self, angle, velocity, trajectory=None):
         self.vx = VO * math.cos(angle)
