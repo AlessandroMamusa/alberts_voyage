@@ -4,15 +4,17 @@
 # ####### TODOS ########
 # DONE: generate skyline
 # DONE: place player and enemie/s
+# DONE: turns
 # TODO: projectiles that interact with buildings and player + enemies
 # TODO: camera that follow projectile
-# TODO: turns player and enemie/s
 # TODO: schenes (menu, start, win, game over)
+# TODO: add HUD
 # ######################
 
 
 import pyxel
 
+from characters import Character
 from scenes import GAME_OVER_SCENE, SCENES, VICTORY_SCENE
 
 
@@ -22,11 +24,16 @@ class Game:
         self.scene = SCENES[self._current_scene]
         self.players = []
         self.enemies = []
+        self.turn_manager = TurnManager(self)
 
     def start(self):
         self._scene_instance = self.scene(
             0, 0, 0, 0, 0, pyxel.width, pyxel.height, self
         )
+        self.turn_manager.start()
+
+    def end_turn(self):
+        self.turn_manager.pass_turn()
 
     def victory(self):
         self.scene = VICTORY_SCENE
@@ -53,6 +60,24 @@ class Game:
             p.draw()
         for e in self.enemies:
             e.draw()
+
+
+class TurnManager:
+    def __init__(self, game):
+        self.game = game
+        self.active_entity = None
+
+    def start(self):
+        self.counter = 0
+        self.active_entity: Character = [*self.game.players, *self.game.enemies][0]
+        self.active_entity.is_active = True
+
+    def pass_turn(self):
+        self.active_entity.is_active = False
+        self.counter += 1
+        entities = self.game.players + self.game.enemies
+        self.active_entity = entities[self.counter % len(entities)]
+        self.active_entity.is_active = True
 
 
 class App:
