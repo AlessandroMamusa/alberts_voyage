@@ -9,6 +9,8 @@
 # TODO: camera that follow projectile
 # TODO: schenes (menu, start, win, game over)
 # TODO: add HUD
+# TODO: enemy AI
+# TODO: core ready?
 # ######################
 
 
@@ -21,41 +23,39 @@ from scenes import GAME_OVER_SCENE, SCENES, VICTORY_SCENE
 class Game:
     def __init__(self):
         self._current_scene = 1
-        self.scene = SCENES[self._current_scene]
+        self.scene_cls = SCENES[self._current_scene]
         self.players = []
         self.enemies = []
         self.turn_manager = TurnManager(self)
 
     def start(self):
-        self._scene_instance = self.scene(
-            0, 0, 0, 0, 0, pyxel.width, pyxel.height, self
-        )
+        self.scene = self.scene_cls(0, 0, 0, 0, 0, pyxel.width, pyxel.height, self)
         self.turn_manager.start()
 
     def end_turn(self):
         self.turn_manager.pass_turn()
 
     def victory(self):
-        self.scene = VICTORY_SCENE
+        self.scene_cls = VICTORY_SCENE
 
     def game_over(self):
-        self.scene = GAME_OVER_SCENE
+        self.scene_cls = GAME_OVER_SCENE
 
     def next_scene(self):
         self._current_scene += 1
-        self.scene = SCENES[self._current_scene]
+        self.scene_cls = SCENES[self._current_scene]
         # destroy last scene
         # init new scene
 
     def update(self):
-        self._scene_instance.update()
+        self.scene.update()
         for p in self.players:
             p.update()
         for e in self.enemies:
             e.update()
 
     def draw(self):
-        self._scene_instance.draw()
+        self.scene.draw()
         for p in self.players:
             p.draw()
         for e in self.enemies:
