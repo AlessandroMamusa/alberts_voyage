@@ -5,14 +5,21 @@
 # DONE: generate skyline
 # DONE: place player and enemie/s
 # DONE: turns
-# TODO: projectiles that interact with buildings and player + enemies
+# DONE: projectiles that interact with buildings (holes) and player + enemies
+# TODO: enemy AI
 # TODO: camera that follow projectile
 # TODO: schenes (menu, start, win, game over)
 # TODO: add HUD
-# TODO: enemy AI
 # TODO: core ready?
+# TODO: schene start from enemies position and transition to player
+# TODO: toggle to move the camera around
 # ######################
 
+# ######## BUGS & IMPROVEMENTS ########
+# scope starting in wrong position
+# banana starting in wrong position
+# manage collisions for different shapes
+# #####################################
 
 import pyxel
 
@@ -27,6 +34,20 @@ class Game:
         self.players = []
         self.enemies = []
         self.turn_manager = TurnManager(self)
+
+    def update(self):
+        self.scene.update()
+        for p in self.players:
+            p.update()
+        for e in self.enemies:
+            e.update()
+
+    def draw(self):
+        self.scene.draw()
+        for p in self.players:
+            p.draw()
+        for e in self.enemies:
+            e.draw()
 
     def start(self):
         self.scene = self.scene_cls(0, 0, 0, 0, 0, pyxel.width, pyxel.height, self)
@@ -47,19 +68,16 @@ class Game:
         # destroy last scene
         # init new scene
 
-    def update(self):
-        self.scene.update()
-        for p in self.players:
-            p.update()
-        for e in self.enemies:
-            e.update()
-
-    def draw(self):
-        self.scene.draw()
-        for p in self.players:
-            p.draw()
-        for e in self.enemies:
-            e.draw()
+    def does_hit(self, box):
+        characters = {*self.players, *self.enemies} - {self.turn_manager.active_entity}
+        for c in characters:
+            if c.collide(box):
+                c.hit(box)
+                return True
+        if self.scene.collide(box):
+            self.scene.hit(box)
+            return True
+        return False
 
 
 class TurnManager:

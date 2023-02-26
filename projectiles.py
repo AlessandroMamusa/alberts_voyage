@@ -51,12 +51,17 @@ class Projectile:
 
     def update(self):
         if self._is_flying and not self._has_hit:
+            if self.game.does_hit((self.x, self.y, SPRITE_DIM, SPRITE_DIM)):
+                self._is_flying = False
+                self._has_hit = True
+                # self.game.end_turn()
+                return
             self.vy += self.g  # += because in pyxel the y axis goes down
             self.x = max(
                 min(self.x + self.vx, pyxel.width - SPRITE_DIM), 0
             )  # lock banana into the screen
             self.y = max(self.y + self.vy, 0)  # lock banana into the screen
-            self._check_collision()
+        return
 
         for target in self.targets:
             if (
@@ -72,7 +77,6 @@ class Projectile:
                 self.game.end_turn()
 
         if self._has_hit:  # projectile hit something else
-            self._has_hit = True
             self._is_flying = False
             self.game.end_turn()
 

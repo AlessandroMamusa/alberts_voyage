@@ -32,6 +32,7 @@ class Character:
             self.projectile = self._get_projectile()
             self.projectile.update()
         else:
+            return
             # destroy the projectile?
             self.projectile = None
 
@@ -53,10 +54,27 @@ class Character:
             )
         return self.projectile
 
+    def collide(self, box):
+        x, y, w, h = box
+        if (
+            x < self.x + self.w
+            and x + w > self.x
+            and y < self.y + self.h
+            and h + y > self.y
+        ):
+            return True
+        return False
+
+    def hit(self, box):
+        raise NotImplementedError
+
 
 class Monkey(Character):
     def __init__(self, x, y, *args, **kwargs):
         super().__init__(x, y, 0, 0, 0, SPRITE_DIM * 2, SPRITE_DIM * 2, *args, **kwargs)
+
+    def hit(self, box):
+        self.game.enemies.remove(self)
 
 
 class Player(Monkey):
@@ -108,3 +126,6 @@ class Player(Monkey):
             self.projectile.shoot(self.sight_angle, velocity=VO)
         if pyxel.btn(pyxel.KEY_R):
             self.projectile.reload()
+
+    def hit(self, box):
+        self.game.players.remove(self)

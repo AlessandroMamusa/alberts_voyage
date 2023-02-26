@@ -24,12 +24,19 @@ class Scene:
         self.w = w
         self.h = h
         self.game = game
+        self.holes = []
 
     def update(self):
         pass
 
     def draw(self):
         pyxel.bltm(self.x, self.y, self.tm, self.u, self.v, self.w, self.h)
+
+    def collide(self):
+        raise NotImplementedError
+
+    def hit(self):
+        raise NotImplementedError
 
 
 class GeneratedLevel(Scene):
@@ -44,12 +51,15 @@ class GeneratedLevel(Scene):
         game.enemies.append(enemy)
 
     def draw(self):
-        pyxel.cls(1)
+        pyxel.cls(1)  # clear sky area
         for x, building_height in enumerate(self.skyline):
             pyxel.blt(x * SPRITE_DIM * 2, HEIGHT - 8, 0, 0, 24, 16, 8)  # draw ground
             for height in range(0, building_height, 8):  # build palace
                 y = height_to_y(height, SPRITE_DIM)
                 pyxel.blt(x * SPRITE_DIM * 2, y, 0, 0, 16, 16, 8)
+        for hole in self.holes:
+            x, y = hole
+            pyxel.circ(x+SPRITE_DIM/2, y+SPRITE_DIM/2, SPRITE_DIM/2, 1)
 
     def update(self):
         super().update()
@@ -85,6 +95,37 @@ class GeneratedLevel(Scene):
                 * pyxel.noise(random.random(), random.random())
             )
             self.skyline.append(math.ceil(h / 8) * 8)
+
+    def collide(self, box):
+        x, y, w, h = box
+        for n, height in enumerate(self.skyline):
+            building_y = height_to_y(height)
+            building_x = n * SPRITE_DIM * 2
+            building_w = SPRITE_DIM * 2
+            building_h = y
+            if (
+                x < building_x + building_w
+                and x + w > building_x
+                and y < building_y + building_h
+                and h + y > building_y
+            ):
+                for hole in self.holes:
+                    hole_x, hole_y = hole
+                    x < hole_x + w
+                    if (
+                        x < hole_x + SPRITE_DIM
+                        and x + SPRITE_DIM > hole_x
+                        and y < hole_y + SPRITE_DIM
+                        and SPRITE_DIM + y > hole_y
+                    ):
+                        return False
+                return True
+        return False
+
+    def hit(self, box):
+        x, y, w, h = box
+        self.holes.append((x, y))
+        return
 
 
 class CityScene(Scene):
